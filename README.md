@@ -21,6 +21,35 @@ $ docker-compose run web ./manage.py createsuperuser
 
 Для тонкой настройки Docker Compose используйте переменные окружения. Их названия отличаются от тех, что задаёт docker-образа, сделано это чтобы избежать конфликта имён. Внутри docker-compose.yaml настраиваются сразу несколько образов, у каждого свои переменные окружения, и поэтому их названия могут случайно пересечься. Чтобы не было конфликтов к названиям переменных окружения добавлены префиксы по названию сервиса. Список доступных переменных можно найти внутри файла [`docker-compose.yml`](./docker-compose.yml).
 
+## Развертывание Kubernetes кластера с помощью Minikube
+
+Установите [minikube](https://kubernetes.io/ru/docs/tasks/tools/install-minikube/) и [kubectl](https://kubernetes.io/ru/docs/tasks/tools/install-kubectl/).
+Запустите minikube:
+```
+minikube start
+```
+
+Создайте образ Django-приложения в кластере командой:
+```
+minikube image build -t имя_образа backend_main_django/
+```
+Отредактируйте файл `test-django-configmap-example.yaml`, подставив свои значения переменных окружения и переименовав файл в `test-django-configmap.yaml`.
+Запустите Django-приложение в кластере командой:
+```
+kubectl apply -f kubernetes/
+```
+
+Приложение будет доступно по адресу:
+```
+minikube service django-deploy-service --url
+```
+
+После внесения изменений в конфигурационный файл `test-django-configmap.yaml` введите следующие команды:
+```
+kubectl apply -f kubernetes/
+kubectl rollout restart -f kubernetes/
+```
+
 ## Переменные окружения
 
 Образ с Django считывает настройки из переменных окружения:

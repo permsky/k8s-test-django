@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-django-config
+data:
+  ALLOWED_HOSTS: "localhost, 127.0.0.1, your_service_IP" or just "*"
+  DATABASE_URL: postgres://database_username:database_password@host_IP:host_port/database_name
+  DEBUG: "False"
+  SECRET_KEY: your_sercret_key
