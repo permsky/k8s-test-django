@@ -28,6 +28,10 @@ $ docker-compose run web ./manage.py createsuperuser
 ```
 minikube start
 ```
+Активируйте Ingress:
+```
+minikube addons enable ingress
+```
 
 Создайте образ Django-приложения в кластере командой:
 ```
@@ -39,9 +43,14 @@ minikube image build -t имя_образа backend_main_django/
 kubectl apply -f kubernetes/
 ```
 
-Приложение будет доступно по адресу:
+Узнайте IP-адрес minikube:
 ```
-minikube service django-deploy-service --url
+minikube ip
+```
+
+Приложение будет доступно по адресу `star-burger.test` после добавления в файл `/etc/hosts` строки:
+```
+your_minikube_ip star-burger.test
 ```
 
 После внесения изменений в конфигурационный файл `test-django-configmap.yaml` введите следующие команды:
