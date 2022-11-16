@@ -43,6 +43,33 @@ minikube image build -t имя_образа backend_main_django/
 kubectl apply -f kubernetes/
 ```
 
+Установите и настройте [Helm](https://helm.sh/):
+```
+sudo snap install helm --classic
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install postgres-15 bitnami/postgresql
+helm list
+```
+
+Следуя инструкциям, появившимся после создания пода базы данных, создайте создайте базу данных и пользователя:
+```
+CREATE DATABASE yourdbname;
+CREATE USER youruser WITH ENCRYPTED PASSWORD 'yourpass';
+GRANT ALL PRIVILEGES ON DATABASE yourdbname TO youruser;
+ALTER USER youruser SUPERUSER;
+```
+
+Для применения миграций базы данных используйте команду:
+```
+kubectl apply -f kubernetes/test-django-migrate.yaml
+```
+
+Для создания суперпользователя используйте команду:
+```
+kubectl run ... -ti -- bash
+```
+
 Узнайте IP-адрес minikube:
 ```
 minikube ip
@@ -52,21 +79,17 @@ minikube ip
 ```
 your_minikube_ip star-burger.test
 ```
+
 Раз в месяц будет запускаться автоматическая очистка сессий Django-приложения.
 Если возникла необходимость очистить сессии Django-приложения не по расписанию, то это можно сделать в ручную:
 ```
 kubectl create job --from=cronjob/test-django-clearsessions any_job_name
 ```
 
-Для применения миграций базы данных используйте команду:
-```
-kubectl apply -f kubernetes/test-django-migrate.yaml
-```
-
 После внесения изменений в конфигурационный файл `test-django-configmap.yaml` введите следующие команды:
 ```
 kubectl apply -f kubernetes/
-kubectl rollout restart -f kubernetes/
+kubectl rollout restart -f kubernetes/test-django-deployment.yaml
 ```
 
 ## Переменные окружения
