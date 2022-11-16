@@ -58,6 +58,11 @@ your_minikube_ip star-burger.test
 kubectl create job --from=cronjob/test-django-clearsessions any_job_name
 ```
 
+Для применения миграций базы данных используйте команду:
+```
+kubectl apply -f kubernetes/test-django-migrate.yaml
+```
+
 После внесения изменений в конфигурационный файл `test-django-configmap.yaml` введите следующие команды:
 ```
 kubectl apply -f kubernetes/
